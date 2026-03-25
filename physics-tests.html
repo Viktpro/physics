@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Физика | Премиум тесты</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: radial-gradient(circle at 20% 30%, #0a0a2a, #030318);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Анимированные частицы */
+        .particle {
+            position: fixed;
+            background: rgba(100, 150, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Светящийся фон */
+        .glow-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 40%, rgba(100, 80, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Header с анимацией */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #aaccff, #8b5cf6, #ec489a);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 3s ease infinite;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Карточки тем с 3D эффектом */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .topic-card {
+            background: rgba(20, 30, 55, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 150, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .topic-card:hover::before {
+            left: 100%;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #8b5cf6;
+            box-shadow: 0 25px 40px -15px rgba(100, 80, 255, 0.4);
+        }
+
+        .topic-card.active {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(100, 80, 255, 0.2), rgba(139, 92, 246, 0.2));
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .topic-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: iconPulse 2s ease infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .topic-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-card p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Тестовая область с неоном */
+        .test-area {
+            background: rgba(10, 15, 35, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 2.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: fadeInUp 0.8s ease;
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .question-counter {
+            background: rgba(139, 92, 246, 0.2);
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .score {
+            background: rgba(100, 200, 255, 0.2);
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+            background: linear-gradient(135deg, #fff, #aaccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .option {
+            background: rgba(30, 40, 70, 0.6);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+            transition: left 0.4s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:hover {
+            transform: translateX(8px);
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .option.disabled {
+            cursor: default;
+            opacity: 0.8;
+        }
+
+        .option.disabled:hover {
+            transform: none;
+        }
+
+        .option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .option.wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #ec489a);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        /* Кнопки */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #ec489a);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -10px rgba(139, 92, 246, 0.7);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 40, 70, 0.8);
+            color: #aaccff;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateX(-3px);
+        }
+
+        /* Результат */
+        .result-area {
+            text-align: center;
+            padding: 2rem;
+            animation: zoomIn 0.5s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec489a, #fbbf24);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .result-message {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #cbd5e1;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec489a);
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header h1 { font-size: 2rem; }
+            .question-text { font-size: 1.3rem; }
+            .test-area { padding: 1.5rem; }
+            .option { padding: 0.8rem 1rem; }
+            .option-text { font-size: 0.85rem; }
+            .btn { padding: 0.7rem 1.2rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-atom fa-spin"></i>
+            </div>
+            <h1>Физика | Премиум тесты</h1>
+            <p>Погрузись в мир знаний с неоновой эстетикой ✨</p>
+        </div>
+
+        <div class="topics-grid" id="topicsGrid"></div>
+
+        <div class="test-area" id="testArea">
+            <div id="quizContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const tests = {
+            mechanics: {
+                name: "Механика",
+                icon: "⚡",
+                description: "Кинематика, динамика, законы Ньютона",
+                questions: [
+                    { text: "Как называется физическая величина, измеряемая в метрах в секунду?", options: ["Ускорение", "Скорость", "Путь", "Время"], correct: 1 },
+                    { text: "Первый закон Ньютона также называют...", options: ["Закон инерции", "Закон всемирного тяготения", "Закон сохранения энергии", "Закон действия и противодействия"], correct: 0 },
+                    { text: "Формула для расчёта силы тяжести:", options: ["F = ma", "F = mg", "F = kx", "F = μN"], correct: 1 },
+                    { text: "Какая единица измерения давления?", options: ["Ньютон", "Джоуль", "Паскаль", "Ватт"], correct: 2 },
+                    { text: "Что измеряет спидометр в автомобиле?", options: ["Среднюю скорость", "Мгновенную скорость", "Ускорение", "Путь"], correct: 1 },
+                    { text: "Какой закон описывает взаимодействие двух тел?", options: ["Первый закон Ньютона", "Второй закон Ньютона", "Третий закон Ньютона", "Закон всемирного тяготения"], correct: 2 },
+                    { text: "Какая формула описывает кинетическую энергию?", options: ["E = mgh", "E = mv²/2", "E = kx²/2", "E = mc²"], correct: 1 }
+                ]
+            },
+            thermodynamics: {
+                name: "Термодинамика",
+                icon: "🔥",
+                description: "Температура, теплота, агрегатные состояния",
+                questions: [
+                    { text: "При какой температуре замерзает вода по шкале Цельсия?", options: ["0°C", "100°C", "-273°C", "32°C"], correct: 0 },
+                    { text: "Абсолютный ноль температуры по шкале Кельвина равен:", options: ["0 K", "100 K", "273 K", "-273 K"], correct: 0 },
+                    { text: "Как называется процесс перехода вещества из жидкого состояния в газообразное?", options: ["Конденсация", "Кристаллизация", "Испарение", "Сублимация"], correct: 2 },
+                    { text: "Какая формула описывает количество теплоты?", options: ["Q = cmΔt", "Q = λm", "Q = Lm", "Все верны"], correct: 3 },
+                    { text: "Что такое теплопроводность?", options: ["Передача тепла излучением", "Передача тепла потоками жидкости", "Передача тепла от более нагретых частей к менее нагретым", "Передача тепла при фазовом переходе"], correct: 2 },
+                    { text: "Какая единица измерения количества теплоты?", options: ["Ватт", "Джоуль", "Ньютон", "Паскаль"], correct: 1 }
+                ]
+            },
+            optics: {
+                name: "Оптика",
+                icon: "💡",
+                description: "Свет, линзы, волны",
+                questions: [
+                    { text: "Скорость света в вакууме приблизительно равна:", options: ["3·10⁵ км/с", "3·10⁸ м/с", "3·10⁶ м/с", "3·10⁹ м/с"], correct: 1 },
+                    { text: "Какое явление объясняет радугу?", options: ["Дифракция", "Интерференция", "Дисперсия", "Поляризация"], correct: 2 },
+                    { text: "Линза, которая собирает лучи в фокусе, называется:", options: ["Рассеивающей", "Собирающей", "Плоской", "Вогнутой"], correct: 1 },
+                    { text: "Какой цвет имеет самая короткая длина волны видимого света?", options: ["Красный", "Зелёный", "Синий", "Фиолетовый"], correct: 3 },
+                    { text: "Зеркальное отражение — это...", options: ["Отражение от гладкой поверхности", "Отражение от шероховатой поверхности", "Преломление света", "Поглощение света"], correct: 0 },
+                    { text: "Какое устройство используется для разложения света в спектр?", options: ["Линза", "Зеркало", "Призма", "Дифракционная решётка"], correct: 2 }
+                ]
+            }
+        };
+
+        let currentTopic = "mechanics";
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let quizFinished = false;
+
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = Math.random() * 15 + 8 + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                document.body.appendChild(particle);
+            }
+        }
+
+        function renderTopics() {
+            const container = document.getElementById("topicsGrid");
+            container.innerHTML = "";
+            for (const [key, topic] of Object.entries(tests)) {
+                const card = document.createElement("div");
+                card.className = `topic-card ${currentTopic === key ? "active" : ""}`;
+                card.onclick = () => selectTopic(key);
+                card.innerHTML = `
+                    <div class="topic-icon">${topic.icon}</div>
+                    <h3>${topic.name}</h3>
+                    <p>${topic.description}</p>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function selectTopic(topic) {
+            currentTopic = topic;
+            currentQuestionIndex = 0;
+            userAnswers = new Array(tests[topic].questions.length).fill(null);
+            quizFinished = false;
+            renderTopics();
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById("quizContainer");
+            const topic = tests[currentTopic];
+            const questions = topic.questions;
+
+            if (quizFinished) {
+                let correctCount = userAnswers.filter((a, i) => a === questions[i].correct).length;
+                const percentage = Math.round((correctCount / questions.length) * 100);
+                let message = "";
+                if (percentage >= 85) message = "🌟 Астрофизик в будущем! Ты гений! 🌟";
+                else if (percentage >= 70) message = "🎓 Отлично! Твёрдая пятёрка! 🎓";
+                else if (percentage >= 50) message = "📚 Хорошо! Но есть над чем поработать 💪";
+                else message = "🔄 Попробуй ещё раз! Физика ждёт тебя! 🔄";
+
+                container.innerHTML = `
+                    <div class="result-area">
+                        <div class="result-score">${correctCount} / ${questions.length}</div>
+                        <div class="result-message">${message}</div>
+                        <button class="btn btn-primary restart-btn" onclick="restartTest()"><i class="fas fa-sync-alt"></i> Пройти заново</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const selectedAnswer = userAnswers[currentQuestionIndex];
+            const isAnswered = selectedAnswer !== null;
+
+            let optionsHtml = "";
+            question.options.forEach((opt, idx) => {
+                let extraClass = "";
+                if (isAnswered) {
+                    if (idx === question.correct) extraClass = "correct";
+                    else if (idx === selectedAnswer && idx !== question.correct) extraClass = "wrong";
+                }
+                const letter = String.fromCharCode(65 + idx);
+                optionsHtml += `
+                    <div class="option ${extraClass} ${isAnswered ? "disabled" : ""}" onclick="${!isAnswered ? `selectAnswer(${idx})` : ""}">
+                        <div class="option-letter">${letter}</div>
+                        <div class="option-text">${opt}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="question-header">
+                    <div class="question-counter"><i class="fas fa-question-circle"></i> Вопрос ${currentQuestionIndex + 1} / ${questions.length}</div>
+                    <div class="score"><i class="fas fa-trophy"></i> Прогресс: ${userAnswers.filter(a => a !== null).length}/${questions.length}</div>
+                </div>
+                <div class="question-text">${question.text}</div>
+                <div class="options">${optionsHtml}</div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? "disabled" : ""}><i class="fas fa-arrow-left"></i> Назад</button>
+                    <button class="btn btn-primary" onclick="nextQuestion()">${currentQuestionIndex === questions.length - 1 ? "<i class='fas fa-check'></i> Завершить" : "Далее <i class='fas fa-arrow-right'></i>"}</button>
+                </div>
+            `;
+        }
+
+        function selectAnswer(answerIndex) {
+            userAnswers[currentQuestionIndex] = answerIndex;
+            renderQuiz();
+        }
+
+        function nextQuestion() {
+            const questions = tests[currentTopic].questions;
+            if (userAnswers[currentQuestionIndex] === null) {
+                alert("Выбери ответ на вопрос!");
+                return;
+            }
+            if (currentQuestionIndex === questions.length - 1) {
+                quizFinished = true;
+                renderQuiz();
+            } else {
+                currentQuestionIndex++;
+                renderQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuiz();
+            }
+        }
+
+        function restartTest() {
+            userAnswers = new Array(tests[currentTopic].questions.length).fill(null);
+            currentQuestionIndex = 0;
+            quizFinished = false;
+            renderQuiz();
+        }
+
+        createParticles();
+        renderTopics();
+        renderQuiz();
+    </script>
+</body>
+</html>
